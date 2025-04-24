@@ -5,6 +5,6 @@ that returns concaconate 2 strings.
 """
 
 
-def concat(a: str, b:str) -> str:
+def concat(a: str, b: str) -> str:
     """concaconate 2 str"""
     return a + b
