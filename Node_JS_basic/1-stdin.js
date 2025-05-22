@@ -1,15 +1,16 @@
-// Display welcome message
-console.log("Welcome to Holberton School, what is your name?");
+const readline = require('readline');
 
-// Set up input listener
-process.stdin.setEncoding('utf8');
-
-process.stdin.on('data', (data) => {
-  const name = data.trim(); // Remove newline/whitespace
-  console.log(`Your name is: ${name}`);
+const readLine = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
 });
 
-// Handle program exit
-process.on('exit', () => {
-  console.log("This important software is now closing");
+console.log('Welcome to Holberton School, what is your name?');
+
+readLine.question('', (name) => {
+  console.log(`Your name is: ${name}`);
+
+  console.log('This important software is now closing');
+
+  readLine.close();
 });
