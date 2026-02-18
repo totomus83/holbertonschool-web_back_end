@@ -1,38 +1,31 @@
 #!/usr/bin/env python3
 """
-This module defines the BasicCache class that inherits from
-BaseCaching and implements a simple dictionary-based cache.
+0-basic_cache module: basic caching system without limit.
 """
 from base_caching import BaseCaching
 
 
 class BasicCache(BaseCaching):
     """
-    BasicCache class that inherits from BaseCaching and
-    implements a simple caching system without eviction policy.
+    Basic cache system that stores key-value pairs.
     """
     def __init__(self):
         super().__init__()
 
-    # Redéfinition de la méthode put
     def put(self, key, item):
         """
-        Add an item to the cache.
+        Add an item in the cache.
 
-        If key or item is None, the method does nothing.
-        Otherwise, it stores the item in the cache dictionary.
+        If key or item is None, does nothing.
         """
         if key is None or item is None:
-            return  # Arrête la fonction en ne faisant rien
+            return
         else:
             self.cache_data[key] = item
 
-    # Redéfinition de la méthode get
     def get(self, key):
         """
-        Retrieve an item from the cache by key.
-
-        Returns None if the key is None or does not exist.
+        Returns the value associated with the key, or None if key doesn't exist.
         """
         if key is None or key not in self.cache_data:
             return None
