@@ -10,9 +10,10 @@ class BasicCache(BaseCaching):
     """
     Basic cache system that stores key-value pairs.
     """
-
+    
     def __init__(self):
         super().__init__()
+
 
     def put(self, key, item):
         """
@@ -25,10 +26,12 @@ class BasicCache(BaseCaching):
         else:
             self.cache_data[key] = item
 
+
     def get(self, key):
         """
         Returns the value associated with the key, or None if key doesn't exist.
         """
         if key is None or key not in self.cache_data:
             return None
-        return self.cache_data[key]
+        else:
+            return self.cache_data[key]
