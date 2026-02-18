@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
-"""
-0-basic_cache module: basic caching system without limit.
-"""
+"""Module that defines a BasicCache caching system."""
+
 from base_caching import BaseCaching
 
 
 class BasicCache(BaseCaching):
-    """
-    Basic cache system that stores key-value pairs.
-    """
+    """BasicCache class that stores key-value pairs without eviction policy."""
+
     def __init__(self):
+        """Initialize the cache."""
         super().__init__()
 
     def put(self, key, item):
-        """
-        Add an item in the cache.
+        """Add an item to the cache.
 
-        If key or item is None, does nothing.
+        Does nothing if key or item is None.
         """
         if key is None or item is None:
             return
@@ -24,11 +22,11 @@ class BasicCache(BaseCaching):
             self.cache_data[key] = item
 
     def get(self, key):
-        """
-        Returns the value associated with the key, or None if key doesn't exist.
+        """Retrieve an item from the cache.
+
+        Returns None if the key is None or does not exist.
         """
         if key is None or key not in self.cache_data:
             return None
         else:
             return self.cache_data[key]
-
