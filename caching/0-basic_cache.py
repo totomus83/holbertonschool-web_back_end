@@ -5,11 +5,11 @@ This module defines a simple dictionary-based cache.
 """
 
 class BasicCache(BaseCaching):
-    
+    """
+    BasicCache class that inherits from BaseCaching.
+    """
     def __init__(self):
         super().__init__()
-        
-     
 
     def put(self, key, item):
         """
