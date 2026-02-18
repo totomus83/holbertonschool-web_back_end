@@ -2,6 +2,7 @@
 """
 This module defines a simple dictionary-based cache.
 """
+
 from base_caching import BaseCaching
 
 class BasicCache(BaseCaching):
