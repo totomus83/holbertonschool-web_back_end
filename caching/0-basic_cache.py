@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 from base_caching import BaseCaching
 """
 This module defines a simple dictionary-based cache.
