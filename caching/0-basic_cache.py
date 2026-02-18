@@ -8,8 +8,9 @@ from base_caching import BaseCaching
 
 class BasicCache(BaseCaching):
     """
-    Basic cache system that stores key-value.
+    Basic cache system that stores key-value pairs.
     """
+
     def __init__(self):
         super().__init__()
 
