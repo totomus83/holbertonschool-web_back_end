@@ -8,7 +8,7 @@ from base_caching import BaseCaching
 
 class BasicCache(BaseCaching):
     """
-    Basic cache system that stores key-value
+    Basic cache system that stores key-value.
     """
 
     def put(self, key, item):
