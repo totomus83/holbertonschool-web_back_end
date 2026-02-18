@@ -1,21 +1,21 @@
 #!/usr/bin/env python3
 """
-This module defines a simple dictionary-based cache.
+0-basic_cache module: basic caching system without limit
 """
 
 from base_caching import BaseCaching
 
+
 class BasicCache(BaseCaching):
     """
-    BasicCache class that inherits from BaseCaching.
+    Basic cache system that stores key-value
     """
-    def __init__(self):
-        super().__init__()
 
     def put(self, key, item):
         """
-        Add an item to the cache.
-        If key or item is None, return nothing.
+        Add an item in the cache.
+
+        If key or item is None, does nothing.
         """
         if key is None or item is None:
             return
@@ -23,9 +23,8 @@ class BasicCache(BaseCaching):
 
     def get(self, key):
         """
-        Retrieve an item from the cache.
-        If key is None or not in cache, return nothing.
+        Returns the value associated with the key, or None if key doesn't exist.
         """
-        if key is None:
+        if key is None or key not in self.cache_data:
             return None
-        return self.cache_data.get(key)
+        return self.cache_data[key]
