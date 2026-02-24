@@ -6,7 +6,26 @@ Module for filtering sensitive fields from log messages.
 from dataclasses import fields
 import re
 from typing import List
+import logging
 
+
+class RedactingFormatter(logging.Formatter):
+    """Redacting Formatter class that obfuscates specified fields."""
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        """Initialize the formatter with fields to redact."""
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format the record and redact sensitive fields."""
+        message = super().format(record)
+        return filter_datum(self.fields, self.REDACTION,
+                            message, self.SEPARATOR)
 
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
