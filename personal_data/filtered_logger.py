@@ -1,38 +1,86 @@
 #!/usr/bin/env python3
-"""
-Module for filtering sensitive fields from log messages
-and connecting to a secure MySQL database.
-"""
 
+"""Module for filtering sensitive fields from log messages
+and connecting to a secure MySQL database."""
 
-import logging
 import os
-import mysql.connector
+import logging
+import re
 from typing import List
-from filtered_logger import RedactingFormatter, get_logger, PII_FIELDS, get_db
+import mysql.connector
+
+
+PII_FIELDS = ("name", "email", "phone", "ssn", "password")
+
+
+def filter_datum(fields: List[str], redaction: str, message: str,
+                 separator: str) -> str:
+    """
+    Return the log message with specified fields obfuscated.
+    """
+    pattern = rf"({'|'.join(fields)})=([^{separator}]+)"
+    return re.sub(pattern, r"\1=" + redaction, message)
+
+
+class RedactingFormatter(logging.Formatter):
+    """Redacting Formatter class."""
+
+    REDACTION = "***"
+    FORMAT = "[HOLBERTON] %(name)s %(levelname)s %(asctime)-15s: %(message)s"
+    SEPARATOR = ";"
+
+    def __init__(self, fields: List[str]):
+        """Initialize formatter with fields to redact."""
+        super(RedactingFormatter, self).__init__(self.FORMAT)
+        self.fields = fields
+
+    def format(self, record: logging.LogRecord) -> str:
+        """Format the record after redacting sensitive fields."""
+        original = super().format(record)
+        return filter_datum(self.fields, self.REDACTION,
+                            original, self.SEPARATOR)
+
+
+def get_logger() -> logging.Logger:
+    """
+    Return a logger that redacts PII fields.
+    """
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    logger.addHandler(stream_handler)
+
+    return logger
+
+
+def get_db() -> mysql.connector.connection.MySQLConnection:
+    """Return a connection to the MySQL database."""
+    username = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
+    password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
+    host = os.getenv("PERSONAL_DATA_DB_HOST", "localhost")
+    db_name = os.getenv("PERSONAL_DATA_DB_NAME")
+
+    return mysql.connector.connect(
+        user=username,
+        password=password,
+        host=host,
+        database=db_name
+    )
 
 
 def main() -> None:
-    """Retrieve all rows in users table and display filtered log messages."""
+    """Fetch all users from the database and log them with PII redacted."""
     db = get_db()
     cursor = db.cursor(dictionary=True)
     cursor.execute("SELECT * FROM users;")
     logger = get_logger()
-    formatter = RedactingFormatter(PII_FIELDS)
 
     for row in cursor:
-        # Construct a log message in key=value; key2=value2; ... format
         message = "; ".join(f"{key}={value}" for key, value in row.items()) + ";"
-        log_record = logging.LogRecord(
-            name=logger.name,
-            level=logging.INFO,
-            pathname="",
-            lineno=0,
-            msg=message,
-            args=None,
-            exc_info=None,
-        )
-        print(formatter.format(log_record))
+        logger.info(message)
 
     cursor.close()
     db.close()
