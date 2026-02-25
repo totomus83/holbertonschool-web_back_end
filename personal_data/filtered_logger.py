@@ -22,9 +22,7 @@ def filter_datum(fields: List[str], redaction: str, message: str,
 
 
 class RedactingFormatter(logging.Formatter):
-    """
-    Redacting Formatter class that obfuscates specified fields.
-    """
+    """Redacting Formatter class that obfuscates specified fields."""
     REDACTION = "***"
     FORMAT = (
         "[HOLBERTON] %(name)s %(levelname)s "
