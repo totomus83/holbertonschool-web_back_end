@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
-"""
-Module for filtering sensitive fields from log messages and connecting
-to a secure MySQL database.
-"""
+
+"""Module for filtering sensitive fields from log messages
+and connecting to a secure MySQL database."""
 
 import os
 import re
 from typing import List
 import logging
-import mysql.connector # pip3 install mysql-connector-python
+import mysql.connector
 
 
 # PII fields to redact
