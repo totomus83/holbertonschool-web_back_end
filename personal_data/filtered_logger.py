@@ -42,14 +42,12 @@ class RedactingFormatter(logging.Formatter):
     def format(self, record: logging.LogRecord) -> str:
         """Format the record and redact sensitive fields."""
         message = super().format(record)
-        return filter_datum(self.fields, self.REDACTION, 
+        return filter_datum(self.fields, self.REDACTION,
                             message, self.SEPARATOR)
 
 
 def get_logger() -> logging.Logger:
-    """
-    Return a logger that redacts PII fields.
-    """
+    """Return a logger that redacts PII fields."""
     logger = logging.getLogger("user_data")
     logger.setLevel(logging.INFO)
     logger.propagate = False
