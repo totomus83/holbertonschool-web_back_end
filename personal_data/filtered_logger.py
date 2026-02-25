@@ -61,8 +61,8 @@ def get_logger() -> logging.Logger:
 
 def get_db() -> "mysql.connector.connection.MySQLConnection":
     """
-    Return a connector to the MySQL database using credentials from
-    environment variables.
+    Return a connector to the MySQL database using 
+    credentials from environment variables.
     """
     user = os.getenv("PERSONAL_DATA_DB_USERNAME", "root")
     password = os.getenv("PERSONAL_DATA_DB_PASSWORD", "")
