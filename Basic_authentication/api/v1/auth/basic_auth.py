@@ -5,6 +5,7 @@
 from api.v1.auth.auth import Auth
 import base64
 
+
 class BasicAuth(Auth):
     """ BasicAuth class that inherits from Auth """
 
