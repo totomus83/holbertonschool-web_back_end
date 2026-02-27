@@ -65,7 +65,6 @@ class BasicAuth(Auth):
         """
         Returns the User instance based on email and password
         """
-
         from models.user import User
 
         if user_email is None or not isinstance(user_email, str):
@@ -74,7 +73,11 @@ class BasicAuth(Auth):
         if user_pwd is None or not isinstance(user_pwd, str):
             return None
 
-        users = User.search({"email": user_email})
+        try:
+            users = User.search({"email": user_email})
+        except KeyError:
+            return None
+
         if not users:
             return None
 
