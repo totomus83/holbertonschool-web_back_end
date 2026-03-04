@@ -7,6 +7,7 @@ from flask import request
 class Auth:
     """ Auth class """
 
+
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Returns True if authentication is required
@@ -18,7 +19,7 @@ class Auth:
         if excluded_paths is None or len(excluded_paths) == 0:
             return True
 
-        # Ensure path ends with /
+
         if not path.endswith("/"):
             path += "/"
 
@@ -27,6 +28,22 @@ class Auth:
                 return False
 
         return True
+
+
+    def session_cookie(self, request=None) -> str:
+        """
+        Returns the cookie value from a request
+        The cookie name is defined by environment variable SESSION_NAME
+        """
+        if request is None:
+            return None
+
+        session_name = os.getenv("SESSION_NAME")
+        if session_name is None:
+            return None
+
+        return request.cookies.get(session_name)
+
 
     def authorization_header(self, request=None) -> str:
         """
@@ -37,6 +54,7 @@ class Auth:
         if "Authorization" not in request.headers:
             return None
         return request.headers.get("Authorization")
+
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
