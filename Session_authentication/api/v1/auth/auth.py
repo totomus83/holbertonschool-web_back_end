@@ -30,21 +30,6 @@ class Auth:
         return True
 
 
-    def session_cookie(self, request=None) -> str:
-        """
-        Returns the cookie value from a request
-        The cookie name is defined by environment variable SESSION_NAME
-        """
-        if request is None:
-            return None
-
-        session_name = os.getenv("SESSION_NAME")
-        if session_name is None:
-            return None
-
-        return request.cookies.get(session_name)
-
-
     def authorization_header(self, request=None) -> str:
         """
         Returns the Authorization header from the request
@@ -61,3 +46,18 @@ class Auth:
         Returns None for now
         """
         return None
+
+
+    def session_cookie(self, request=None) -> str:
+        """
+        Returns the cookie value from a request
+        The cookie name is defined by environment variable SESSION_NAME
+        """
+        if request is None:
+            return None
+
+        session_name = os.getenv("SESSION_NAME")
+        if session_name is None:
+            return None
+
+        return request.cookies.get(session_name)
