@@ -9,14 +9,12 @@ import os
 class Auth:
     """Auth class used to manage authentication logic for the API."""
 
-    # Méthode __init__
     def __init__(self):
         """
         Méthode d'initialisation de l'objet Auth
         """
         pass
 
-    # Méthode require_path
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
         Determine if a given path requires authentication.
@@ -34,7 +32,6 @@ class Auth:
                 return False
         return True
 
-    # Méthode authorization_header
     def authorization_header(self, request=None) -> str:
         """
         Retrieve the Authorization header from the request object.
@@ -48,7 +45,6 @@ class Auth:
             return None
         return request.headers.get("Authorization")
 
-    # Méthode current_user
     def current_user(self, request=None) -> TypeVar('User'):
         """
         This method is intended to identify and return the user
@@ -57,7 +53,6 @@ class Auth:
         """
         pass
 
-    # Méthode session_cookie
     def session_cookie(self, request=None) -> str:
         """
         Retrieve the session cookie value from the request.
