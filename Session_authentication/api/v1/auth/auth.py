@@ -1,71 +1,113 @@
 #!/usr/bin/env python3
-"""Authentication module for handling API request authorization."""
+"""
+Module api.v1.auth.auth
+
+This module contains the class Auth that will manage the authentification to
+the API
+"""
 
 from flask import request
 from typing import List, TypeVar
-import os
+from os import getenv
 
 
 class Auth:
-    """Auth class used to manage authentication logic for the API."""
+    """
+    Classe de gestion de l'authentification pour l'API.
 
+    Cette classe fournit des méthodes pour :
+        - déterminer si un chemin nécessite une authentification,
+        - récupérer le header d'autorisation,
+        - récupérer l'utilisateur courant à partir d'une requête Flask.
+    """
+
+    # Méthode __init__
+    def __init__(self):
+        """
+        Méthode d'initialisation de l'objet Auth
+        """
+        pass
+
+    # Méthode require_path
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
-        Determine if a given path requires authentication.
-        This method checks if the requested path is part of the list
-        of excluded paths that do not require authentication.
+        Détermine si un chemin donné nécessite une authentification.
+
+        Parameters:
+            - path (str): Le chemin de la requête HTTP à vérifier.
+            - excluded_paths (List[str]): Liste des chemins exclus de
+            l'authentification.
+
+        Returns:
+            - bool: True si le chemin donné nécessite une authentification,
+            sinon False
         """
-
+        # path vaut None
         if path is None:
-            return True
+            retour = True
+        # excluded_paths vaut None OU est une liste vide
+        elif excluded_paths is None or excluded_paths == []:
+            retour = True
+        else:
+            # Si path ne finit pas par un "/", on le rajoute. (slash tolerant)
+            if path and path[-1] != '/':
+                path += '/'
+            # Si path est dans excluded_path, return False, sinon True
+            if path in excluded_paths:
+                retour = False
+            else:
+                retour = True
+        return retour
 
-        if excluded_paths is None or len(excluded_paths) == 0:
-            return True
-
-
-        if not path.endswith("/"):
-            path += "/"
-
-        for excluded_path in excluded_paths:
-            if path == excluded_path:
-                return False
-
-        return True
-
+    # Méthode authorization_header
     def authorization_header(self, request=None) -> str:
         """
-        Retrieve the Authorization header from the request object.
+        Récupère le header d'autorisation d'une requête Flask.
 
-        This method extracts the Authorization header if it exists
-        in the incoming HTTP request.
+        Parameters:
+            - request (flask.Request, optional): Objet Flask request. Par
+            défaut None.
+
+        Returns:
+            - str: None si request vaut None et si request.headers ne contient
+            pas la clé "Authorization".
+            Sinon, retourne le contenu du header Authorization.
         """
-        if request is None:
-            return None
-        if "Authorization" not in request.headers:
-            return None
-        return request.headers.get("Authorization")
+        # Si request vaut None ou qu'il n'y a pas de clé "Authorization"
+        if request is None or request.headers.get("Authorization") is None:
+            retour = None
+        else:
+            retour = request.headers.get("Authorization")
+        return retour
 
+    # Méthode current_user
     def current_user(self, request=None) -> TypeVar('User'):
         """
-        This method is intended to identify and return the user
-        based on the authentication information contained in the request.
-        Currently, this method is not implemented.
-        """
-        return None
+        Retourne l'utilisateur courant basé sur la requête.
 
-    def session_cookie(self, request=None) -> str:
-        """
-        Retrieve the session cookie value from the request.
+        Parameters:
+            - request (flask.Request, optional): Objet Flask request. Par
+            défaut None.
 
-        The cookie name is defined by the environment variable
-        SESSION_NAME. This method extracts the corresponding
-        cookie value from the incoming request.
+        Returns:
+            - User: None pour l'instant. Devrait retourner un objet
+            représentant l'utilisateur connecté.
+        """
+        pass
+
+    # Méthode session_cookie
+    def session_cookie(self, request=None):
+        """
+        Returns the value of the session cookie from a request.
+
+        Parameters:
+            request: Flask request object
+
+        Returns:
+            The session ID stored in the cookie or None
         """
         if request is None:
             return None
-
-        session_name = os.getenv("SESSION_NAME")
-        if session_name is None:
-            return None
-
-        return request.cookies.get(session_name)
+        SESSION_NAME = getenv("SESSION_NAME")
+        cookie_name = request.cookies.get(SESSION_NAME)
+        return cookie_name
