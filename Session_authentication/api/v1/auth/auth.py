@@ -23,21 +23,15 @@ class Auth:
         This method checks if the requested path is part of the list
         of excluded paths that do not require authentication.
         """
-
         if path is None:
             return True
-
         if excluded_paths is None or len(excluded_paths) == 0:
             return True
-
-
         if not path.endswith("/"):
             path += "/"
-
         for excluded_path in excluded_paths:
             if path == excluded_path:
                 return False
-
         return True
 
     # Méthode authorization_header
@@ -62,7 +56,7 @@ class Auth:
         Currently, this method is not implemented.
         """
         pass
-    
+
     # Méthode session_cookie
     def session_cookie(self, request=None) -> str:
         """
@@ -74,9 +68,7 @@ class Auth:
         """
         if request is None:
             return None
-
         session_name = os.getenv("SESSION_NAME")
         if session_name is None:
             return None
-
         return request.cookies.get(session_name)
