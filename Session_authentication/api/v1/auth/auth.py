@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Authentication module for handling API request authorization."""
-from typing import List, TypeVar
+
 from flask import request
+from typing import List, TypeVar
 import os
 
 
 class Auth:
     """Auth class used to manage authentication logic for the API."""
-
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
@@ -32,7 +32,6 @@ class Auth:
 
         return True
 
-
     def authorization_header(self, request=None) -> str:
         """
         Retrieve the Authorization header from the request object.
@@ -46,7 +45,6 @@ class Auth:
             return None
         return request.headers.get("Authorization")
 
-
     def current_user(self, request=None) -> TypeVar('User'):
         """
         This method is intended to identify and return the user
@@ -54,7 +52,6 @@ class Auth:
         Currently, this method is not implemented.
         """
         return None
-
 
     def session_cookie(self, request=None) -> str:
         """
