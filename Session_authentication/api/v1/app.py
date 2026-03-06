@@ -6,11 +6,10 @@ This module initializes the Flask application, registers API routes,
 configures CORS, and handles authentication setup depending on the
 AUTH_TYPE environment variables.
 """
-
 from os import getenv
 from api.v1.views import app_views
 from flask import Flask, jsonify, abort, request
-from flask_cors import CORS
+from flask_cors import (CORS, cross_origin)
 import os
 
 
@@ -20,20 +19,20 @@ CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
 
 auth = None
 
-auth_type = os.getenv("AUTH_TYPE")
-if auth_type == "auth":
-    from api.v1.auth.auth import Auth
-    auth = Auth()
-elif auth_type == "basic_auth":
+AUTH_TYPE = getenv("AUTH_TYPE")
+if AUTH_TYPE == "basic_auth":
     from api.v1.auth.basic_auth import BasicAuth
     auth = BasicAuth()
-elif auth_type == "session_auth":
+elif AUTH_TYPE == "session_auth":
     from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
+else:
+    from api.v1.auth.auth import Auth
+    auth = Auth()
 
 
 @app.before_request
-def before_request_handler():
+def before_request():
     """
     Validate incoming requests before they reach the route handlers.
 
@@ -42,24 +41,20 @@ def before_request_handler():
     configured authentication type.
     """
     excluded_paths = ['/api/v1/status/',
-        '/api/v1/unauthorized/',
-        '/api/v1/forbidden/',
-        '/api/v1/auth_session/login/']
-    if auth is None:
+                      '/api/v1/unauthorized/',
+                      '/api/v1/forbidden/',
+                      '/api/v1/auth_session/login/']
+    if auth is None or not auth.require_auth(request.path, excluded_paths):
         return
 
-    if not auth.require_auth(request.path, excluded_paths):
-        return
-
-    if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
+    if (auth.authorization_header(request) is None and
+       auth.session_cookie(request) is None):
         abort(401)
 
-    current_user = auth.current_user(request)
+    request.current_user = auth.current_user(request)
 
-    if current_user is None:
+    if request.current_user is None:
         abort(403)
-
-    request.current_user = current_user
 
 
 @app.errorhandler(404)
@@ -74,7 +69,7 @@ def not_found(error) -> str:
 
 
 @app.errorhandler(401)
-def unauthorized(error) -> str:
+def unauthorized_error(error) -> str:
     """
     Handle 401 Unauthorized errors.
 
@@ -85,7 +80,7 @@ def unauthorized(error) -> str:
 
 
 @app.errorhandler(403)
-def forbidden(error) -> str:
+def forbidden_error(error) -> str:
     """
     Handle 403 Forbidden errors.
 
