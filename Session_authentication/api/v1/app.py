@@ -4,7 +4,7 @@ Route module for the API.
 
 This module initializes the Flask application, registers API routes,
 configures CORS, and handles authentication setup depending on the
-AUTH_TYPE environment variable.
+AUTH_TYPE environment variables.
 """
 
 from os import getenv
