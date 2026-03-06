@@ -17,7 +17,9 @@ import os
 app = Flask(__name__)
 app.register_blueprint(app_views)
 CORS(app, resources={r"/api/v1/*": {"origins": "*"}})
+
 auth = None
+
 auth_type = os.getenv("AUTH_TYPE")
 if auth_type == "auth":
     from api.v1.auth.auth import Auth
@@ -28,6 +30,33 @@ elif auth_type == "basic_auth":
 elif auth_type == "session_auth":
     from api.v1.auth.session_auth import SessionAuth
     auth = SessionAuth()
+
+
+@app.before_request
+def before_request_handler():
+    """
+    Validate incoming requests before they reach the route handlers.
+
+    This function runs before every request and ensures that
+    authentication requirements are respected depending on the
+    configured authentication type.
+    """
+    if auth is None:
+        return
+    excluded_paths = [
+        '/api/v1/status/',
+        '/api/v1/unauthorized/',
+        '/api/v1/forbidden/',
+        '/api/v1/auth_session/login/'
+    ]
+    if not auth.require_auth(request.path, excluded_paths):
+        return
+    if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
+        abort(401)
+    current_user = auth.current_user(request)
+    if current_user is None:
+        abort(403)
+    request.current_user = current_user
 
 
 @app.errorhandler(404)
@@ -63,41 +92,7 @@ def forbidden(error) -> str:
     return jsonify({"error": "Forbidden"}), 403
 
 
-@app.before_request
-def before_request_handler():
-    """
-    Validate incoming requests before they reach the route handlers.
-
-    This function runs before every request and ensures that
-    authentication requirements are respected depending on the
-    configured authentication type.
-    """
-    if auth is None:
-        return
-    excluded_paths = [
-        '/api/v1/status/',
-        '/api/v1/unauthorized/',
-        '/api/v1/forbidden/',
-        '/api/v1/auth_session/login/'
-    ]
-    if not auth.require_auth(request.path, excluded_paths):
-        return
-    if auth.authorization_header(request) is None and auth.session_cookie(request) is None:
-        abort(401)
-    current_user = auth.current_user(request)
-    if current_user is None:
-        abort(403)
-    request.current_user = current_user
-
-
 if __name__ == "__main__":
-    """
-    Application entry point.
-
-    This block starts the Flask development server using
-    environment variables to configure the host and port.
-    Default values are used if the variables are not set.
-    """
     host = getenv("API_HOST", "0.0.0.0")
     port = getenv("API_PORT", "5000")
     app.run(host=host, port=port)
