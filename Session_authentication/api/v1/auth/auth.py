@@ -1,17 +1,19 @@
 #!/usr/bin/env python3
-""" Auth module """
+"""Authentication module for handling API request authorization."""
 from typing import List, TypeVar
 from flask import request
 import os
 
 
 class Auth:
-    """ Auth class """
+    """Auth class used to manage authentication logic for the API."""
 
 
     def require_auth(self, path: str, excluded_paths: List[str]) -> bool:
         """
-        Returns True if authentication is required
+        Determine if a given path requires authentication.
+        This method checks if the requested path is part of the list
+        of excluded paths that do not require authentication.
         """
 
         if path is None:
@@ -33,7 +35,10 @@ class Auth:
 
     def authorization_header(self, request=None) -> str:
         """
-        Returns the Authorization header from the request
+        Retrieve the Authorization header from the request object.
+
+        This method extracts the Authorization header if it exists
+        in the incoming HTTP request.
         """
         if request is None:
             return None
@@ -44,15 +49,20 @@ class Auth:
 
     def current_user(self, request=None) -> TypeVar('User'):
         """
-        Returns None for now
+        This method is intended to identify and return the user
+        based on the authentication information contained in the request.
+        Currently, this method is not implemented.
         """
         return None
 
 
     def session_cookie(self, request=None) -> str:
         """
-        Returns the cookie value from a request
-        The cookie name is defined by environment variable SESSION_NAME
+        Retrieve the session cookie value from the request.
+
+        The cookie name is defined by the environment variable
+        SESSION_NAME. This method extracts the corresponding
+        cookie value from the incoming request.
         """
         if request is None:
             return None
