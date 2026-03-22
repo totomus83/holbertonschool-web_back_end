@@ -6,6 +6,7 @@ DB module
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.orm.exc import NoResultFound
 
 from user import Base, User
 
@@ -53,19 +54,16 @@ class DB:
         self._session.commit()
         return new_user
     
+    
     def find_user_by(self, **kwargs) -> User:
         """
         Find a user by given attributes
-
-        Args:
-        kwargs: key-value arguments to filter users
-
-        Returns:
-            User: the first matching user
-
-        Raises:
-            NoResultFound: if no user is found
-            InvalidRequestError: if invalid fields are passed
         """
-        query = self._session.query(User).filter_by(**kwargs)
-        return query.one()
+        try:
+            # Effectue une requête "SELECT * FROM users" et retourne le res
+            user = self._session.query(User).filter_by(**kwargs).one()
+            return user
+        except NoResultFound:  # Raised par SQLAlchemy si aucun résultat trouvé
+            raise NoResultFound
+        except InvalidRequestError:  # Raised par SQLAlchemy si kwarg invalide
+            raise InvalidRequestError
