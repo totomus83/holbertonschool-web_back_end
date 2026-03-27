@@ -40,7 +40,7 @@ class TestGetJson(unittest.TestCase):
     @patch("utils.requests.get")
     def test_get_json(self, test_url, test_payload, mock_get):
         """
-        Test that get_json returns expected payload 
+        Test that get_json returns expected payload
         and calls requests.get
         """
         mock_response = Mock()
@@ -58,7 +58,7 @@ class TestMemoize(unittest.TestCase):
 
     def test_memoize(self):
         """
-        Test that memoize caches the result 
+        Test that memoize caches the result
         and calls method only once
         """
 
