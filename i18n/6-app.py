@@ -45,7 +45,8 @@ users = {
 
 def get_user():
     """
-    Retrieve the currently logged-in user based on the 'login_as' query parameter.
+    Retrieve the currently logged-in user
+    based on the 'login_as' query parameter.
 
     Checks if 'login_as' is provided in the URL and corresponds to a user
     in the simulated users table. Returns the user dictionary if found,
@@ -67,13 +68,13 @@ def get_locale() -> str:
     Determine the best matching language for the current request.
 
     The priority order is as follows:
-        1. If a 'locale' query parameter is provided in the URL and is supported,
-           it is used.
-        2. If a user is logged in and their locale is supported, it is used.
-        3. Otherwise, the best match from the request's Accept-Language headers is used.
-
-    Returns:
-        str: Selected locale code ('en' or 'fr').
+        If a 'locale' query parameter is provided in the URL
+        and is supported, it is used.
+        If a user is logged in and their locale is supported, it is used.
+        Otherwise, the best match from the request's
+        Accept-Language headers is used.
+        
+    Returns:str: Selected locale code ('en' or 'fr').
     """
     # Priority 1: Check 'locale' query parameter
     locale = request.args.get("locale")
