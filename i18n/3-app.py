@@ -1,55 +1,40 @@
 #!/usr/bin/env python3
-"""
-Flask application with Babel translations.
-
-This module sets up a Flask app that supports multiple
-languages using Flask-Babel and parametrized templates.
-"""
-
+""" Basic Babel setup """
 from flask import Flask, render_template, request
-from flask_babel import Babel, gettext as _
+from flask_babel import Babel, _
 
 
-class Config:
-    """
-    Configuration class for Flask app.
-
-    Defines available languages and default locale settings.
-    """
+class Config(object):
+    """ Configuration Babel """
     LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
+    BABEL_DEFAULT_LOCALE = 'en'
 
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='templates')
 app.config.from_object(Config)
+babel = Babel(app)
 
-babel = Babel()
 
+@babel.localeselector
+def get_locale():
+    """ Locale language
 
-def get_locale() -> str:
-    """
-    Determine the best match with supported languages.
-
-    Returns:
-        str: The best matching language code.
+        Return:
+            Best match to the language
     """
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-babel.init_app(app, locale_selector=get_locale)
+@app.route('/', methods=['GET'], strict_slashes=False)
+def hello_world():
+    """ Greeting
 
-
-@app.route('/')
-def index() -> str:
-    """
-    Render the index page.
-
-    Returns:
-        str: The rendered HTML template.
+        Return:
+            Initial template html
     """
     return render_template('3-index.html')
 
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
