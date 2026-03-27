@@ -33,7 +33,7 @@ def get_locale() -> str:
     Determine the best matching language for the current request.
 
     Checks for a 'locale' query parameter in the URL. If provided and valid,
-    it will override the default. Otherwise, uses the request's 
+    it will override the default. Otherwise, uses the request's
     Accept-Language header.
 
     Returns: str: Selected locale code ('en' or 'fr').
