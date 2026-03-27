@@ -7,7 +7,6 @@ from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
 
 
-
 class TestAccessNestedMap(unittest.TestCase):
     """Test cases for access_nested_map function"""
 
