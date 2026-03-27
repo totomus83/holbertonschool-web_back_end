@@ -73,7 +73,7 @@ def get_locale() -> str:
         If a user is logged in and their locale is supported, it is used.
         Otherwise, the best match from the request's
         Accept-Language headers is used.
-        
+
     Returns:str: Selected locale code ('en' or 'fr').
     """
     # Priority 1: Check 'locale' query parameter
