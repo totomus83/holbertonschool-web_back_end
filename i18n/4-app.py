@@ -21,13 +21,10 @@ class Config:
     BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
-# Create Flask application
 app = Flask(__name__)
 
-# Load configuration from Config class
 app.config.from_object(Config)
 
-# Create Babel object linked to the Flask app
 babel = Babel()
 
 
@@ -36,10 +33,10 @@ def get_locale() -> str:
     Determine the best matching language for the current request.
 
     Checks for a 'locale' query parameter in the URL. If provided and valid,
-    it will override the default. Otherwise, uses the request's Accept-Language header.
+    it will override the default. Otherwise, uses the request's 
+    Accept-Language header.
 
-    Returns:
-        str: Selected locale code ('en' or 'fr').
+    Returns: str: Selected locale code ('en' or 'fr').
     """
     locale = request.args.get("locale")
     if locale and locale in Config.LANGUAGES:
