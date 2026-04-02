@@ -53,6 +53,26 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method: Callable) -> None:
+    """
+    Display the history of calls of a particular function.
+    Args: The method whose history should be displayed.
+    """
+    redis_client = method.__self__._redis
+    method_name = method.__qualname__
+
+    count = redis_client.get(method_name)
+    count = int(count) if count else 0
+
+    print(f"{method_name} was called {count} times:")
+
+    inputs = redis_client.lrange(f"{method_name}:inputs", 0, -1)
+    outputs = redis_client.lrange(f"{method_name}:outputs", 0, -1)
+
+    for inp, out in zip(inputs, outputs):
+        print(f"{method_name}(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}")
+
+
 class Cache:
     """
     Cache class that interacts with Redis to store data and
