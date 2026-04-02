@@ -1,12 +1,33 @@
 #!/usr/bin/env python3
 """
 This module provides a Cache class that uses Redis to store
-and retrieve data with type conversion support.
+and retrieve data, with call counting functionality.
 """
 
 import redis
 import uuid
 from typing import Union, Callable, Optional, Any
+from functools import wraps
+
+
+def count_calls(method: Callable) -> Callable:
+    """
+    Decorator that counts how many times a method is called
+    and stores the count in Redis using the method's qualified name.
+    Args: The method to decorate.
+    Returns: The wrapped method.
+    """
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        """
+        Wrapper function that increments the call count before
+        executing the original method.
+        """
+        key = method.__qualname__
+        self._redis.incr(key)
+        return method(self, *args, **kwargs)
+
+    return wrapper
 
 
 class Cache:
@@ -23,6 +44,7 @@ class Cache:
         self._redis = redis.Redis()
         self._redis.flushdb()
 
+    @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """
         Store input data in Redis using a randomly generated key.
@@ -49,7 +71,7 @@ class Cache:
         if data is None:
             return None
 
-        if fn is not None:
+        if fn:
             return fn(data)
 
         return data
