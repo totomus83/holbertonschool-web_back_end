@@ -36,8 +36,8 @@ def call_history(method: Callable) -> Callable:
     """
     @wraps(method)
     def wrapper(self, *args, **kwargs):
-        input_key = f"{method.__qualname__}:inputs"
-        output_key = f"{method.__qualname__}:outputs"
+        input_key = f"{method.__qualname__}: inputs"
+        output_key = f"{method.__qualname__}: outputs"
 
         # Store input arguments
         self._redis.rpush(input_key, str(args))
@@ -64,13 +64,16 @@ def replay(method: Callable) -> None:
     count = redis_client.get(method_name)
     count = int(count) if count else 0
 
-    print(f"{method_name} was called {count} times:")
+    print(f"{method_name} was called {count} times: ")
 
-    inputs = redis_client.lrange(f"{method_name}:inputs", 0, -1)
-    outputs = redis_client.lrange(f"{method_name}:outputs", 0, -1)
+    inputs = redis_client.lrange(f"{method_name}: inputs", 0, -1)
+    outputs = redis_client.lrange(f"{method_name}: outputs", 0, -1)
 
     for inp, out in zip(inputs, outputs):
-        print(f"{method_name}(*{inp.decode('utf-8')}) -> {out.decode('utf-8')}")
+        print(
+            f"{method_name}(*{inp.decode('utf-8')}) "
+            f"-> {out.decode('utf-8')}"
+        )
 
 
 class Cache:
