@@ -49,7 +49,7 @@ describe('calculateNumber', function () {
     });
 
     it('should handle negatives', function () {
-      assert.strictEqual(calculateNumber('DIVIDE', -1.2, -3.7), 0.5);
+    assert.strictEqual(calculateNumber('DIVIDE', -1.2, -3.7), 0.25);
     });
   });
 
