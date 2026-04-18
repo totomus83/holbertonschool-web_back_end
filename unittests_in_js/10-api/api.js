@@ -12,7 +12,6 @@ app.get('/', (req, res) => {
   res.send('Welcome to the payment system');
 });
 
-// ✅ GET /available_payments
 app.get('/available_payments', (req, res) => {
   res.json({
     payment_methods: {
@@ -22,10 +21,20 @@ app.get('/available_payments', (req, res) => {
   });
 });
 
-// ✅ POST /login
 app.post('/login', (req, res) => {
   const { userName } = req.body;
   res.send(`Welcome ${userName}`);
+});
+
+app.get('/cart/:id', (req, res) => {
+  const { id } = req.params;
+
+  // Ensure id is a number
+  if (!/^\d+$/.test(id)) {
+    res.status(404).send('Not found');
+  } else {
+    res.send(`Payment methods for cart ${id}`);
+  }
 });
 
 // Start server
