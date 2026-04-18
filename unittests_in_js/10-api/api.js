@@ -12,6 +12,16 @@ app.get('/', (req, res) => {
   res.send('Welcome to the payment system');
 });
 
+app.get('/cart/:id', (req, res) => {
+  const { id } = req.params;
+
+  if (!/^\d+$/.test(id)) {
+    res.status(404).send('Not found');
+  } else {
+    res.send(`Payment methods for cart ${id}`);
+  }
+});
+
 app.get('/available_payments', (req, res) => {
   res.json({
     payment_methods: {
@@ -24,17 +34,6 @@ app.get('/available_payments', (req, res) => {
 app.post('/login', (req, res) => {
   const { userName } = req.body;
   res.send(`Welcome ${userName}`);
-});
-
-app.get('/cart/:id', (req, res) => {
-  const { id } = req.params;
-
-  // Only allow numeric IDs
-  if (!/^\d+$/.test(id)) {
-    res.status(404).send('Not found');
-  } else {
-    res.send(`Payment methods for cart ${id}`);
-  }
 });
 
 // Start server
