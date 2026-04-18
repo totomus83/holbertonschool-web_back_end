@@ -29,7 +29,7 @@ app.post('/login', (req, res) => {
 app.get('/cart/:id', (req, res) => {
   const { id } = req.params;
 
-  // Ensure id is a number
+  // Only allow numeric IDs
   if (!/^\d+$/.test(id)) {
     res.status(404).send('Not found');
   } else {
